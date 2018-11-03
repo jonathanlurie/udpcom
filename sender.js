@@ -3,6 +3,7 @@ const b64ab = require('base64-arraybuffer')
 const dgram = require('dgram');
 const client = dgram.createSocket('udp4');
 
+
 // client.send("hello there", 41234, 'localhost', (err) => {
 //   client.close();
 // });
@@ -26,6 +27,16 @@ let packetObj = {
 let packetMsg = JSON.stringify(packetObj)
 
 
-client.send(packetMsg, 41234, 'localhost', (err) => {
+client.send(packetMsg, 41234, "192.168.178.91"/*'localhost'*/, (err) => {
+  console.log(err);
   client.close();
 });
+
+// bradcast a message
+// console.time("broad");
+// for (let i=1; i<255; i++) {
+//   for (let j=1; j<255; j++) {
+//     client.send(packetMsg, 41234, `192.168.${i}.${j}`/*'localhost'*/, (err) => {});
+//   }
+// }
+// console.timeEnd("broad")
