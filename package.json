@@ -1,0 +1,15 @@
+{
+  "name": "udpcom",
+  "version": "1.0.0",
+  "description": "communicate with UDP",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jonathan Lurie",
+  "license": "MIT",
+  "dependencies": {
+    "base64-arraybuffer": "^0.1.5",
+    "codecutils": "^0.1.3"
+  }
+}
