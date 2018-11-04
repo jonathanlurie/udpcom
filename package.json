@@ -9,7 +9,6 @@
   "author": "Jonathan Lurie",
   "license": "MIT",
   "dependencies": {
-    "base64-arraybuffer": "^0.1.5",
     "codecutils": "^0.1.3",
     "ip": "^1.1.5"
   }
