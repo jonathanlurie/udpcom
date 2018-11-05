@@ -15,7 +15,19 @@
 // console.log ( ip.address() );
 
 const MessageReceiver = require('./MessageReceiver')
-const IncomingMessageEventManager = require('./IncomingMessageEventManager')
+const MessageSender = require('./MessageSender')
+const MessageEventManager = require('./MessageEventManager')
+const Phonebook = require('./Phonebook')
 
-let incomingMessageEventManager = new IncomingMessageEventManager()
-let messageReceiver = new MessageReceiver( incomingMessageEventManager )
+let phonebook = new Phonebook("Jonathan")
+let messageEventManager = new MessageEventManager()
+let messageSender = new MessageSender( messageEventManager, phonebook)
+let messageReceiver = new MessageReceiver(
+  messageEventManager,
+  phonebook,
+  function(){
+    // do something when the messageReceiver listens...
+  })
+
+
+// TODO: make all that a function that can be explosed, or an object with helper functions

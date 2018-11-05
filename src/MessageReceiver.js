@@ -6,9 +6,13 @@ const server = dgram.createSocket('udp4');
 
 
 class MessageReceiver {
-  constructor ( messageEventManager ) {
+  constructor ( messageEventManager, phonebook, onReady ) {
+    this._phonebook = phonebook
     this._messageEventManager = messageEventManager
+    messageEventManager.setMessageReceiver(this)
     this._init ()
+
+    this._onReady = onReady
   }
 
   _init () {
@@ -25,16 +29,15 @@ class MessageReceiver {
         let packetMsg = CodecUtils.arrayBufferToUnicode(buffMsg.buffer)
         let packetObj = JSON.parse(packetMsg)
         packetObj.sendDatetime = new Date(packetObj.sendDatetime)
-        that.processIncomingPacketMessage(packetObj)
+        that_messageEventManager.processIncomingPacketMessage(packetObj, rinfo)
       }
     })
 
     server.on('listening', () => {
       const address = server.address()
       console.log(`server listening ${address.address}:${address.port}`)
+      that._onReady()
     })
-
-
   }
 }
 

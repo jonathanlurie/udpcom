@@ -1,3 +1,6 @@
+const config = require('./config')
+
+
 /*
 There can be various kinds of events, but this list is about associating one or
 more callback function to each incoming of a message, upons its type. In other
@@ -14,15 +17,54 @@ Here it the list of all the incoming message types:
 
 class MessageEventManager {
   constructor () {
+    this._messageSender = null
+    this._messageReceiver = null
+    this._receivedEvents = {}
+    this._init()
+
+    // TODO: allow addition of external events
+  }
+
+  _init () {
+    let that = this
+    // create empty arrays of events per type of message received
+    let types = Object.values(config.messageTypes)
+    for (let i=0; i<types.length; i++) {
+      this._receivedEvents[types[i]] = []
+    }
+
+    // adding some default events
+
+    // When we receive a message with the status 'joining', we:
+    // 1. add this person to the phonebook
+    // 2. make an auto reply to of type 'joiningWelcome' to be added to his phonebook
+    this._receivedEvents[config.messageTypes.joining].push(
+      function(packetObj, remoteInfo){
+        // TODO
+      }
+    )
+    // TODO: right the 2.
+
+    // TODO: add event for when receive joining welcome (add it to the phonebook)
 
   }
 
-  hello () {
-    console.log('hello')
+  setMessageSender (ms) {
+    this._messageSender = ms
   }
 
-  processIncomingPacketMessage (packetObj) {
+  setMessageReceiver (mr) {
+    this._messageReceiver  = mr
+  }
 
+  processIncomingPacketMessage (packetObj, remoteInfo) {
+    // the message must have a known type
+    if (!(msgObj.type in config.messageTypes)) {
+      console.warn('The type of message is invalid')
+      return
+    }
+
+    // TODO: call the right event
   }
 }
 

@@ -1,10 +1,16 @@
 
 
 class Phonebook {
-  constructor () {
+  constructor (myUsername) {
+    this._myUsername = myUsername
     this._myIp = null
     this._myUsername = null
     this._entries = {}
+  }
+
+
+  getMyUsername () {
+    return this._myUsername
   }
 
 
