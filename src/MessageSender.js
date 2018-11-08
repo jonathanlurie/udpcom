@@ -8,6 +8,7 @@ class MessageSender {
   static createGenericMessage () {
     return {
       type: null,
+      hub: null,
       username: null,
       content: null,
       date: new Date()

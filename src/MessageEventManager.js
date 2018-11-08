@@ -43,7 +43,7 @@ class MessageEventManager {
         // TODO
       }
     )
-    // TODO: right the 2.
+    // TODO: write the 2.
 
     // TODO: add event for when receive joining welcome (add it to the phonebook)
 
