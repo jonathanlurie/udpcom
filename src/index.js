@@ -19,8 +19,12 @@ const MessageSender = require('./MessageSender')
 const MessageEventManager = require('./MessageEventManager')
 const Phonebook = require('./Phonebook')
 
+// not sure this oneis very useful after all, i'll just replace that by an event
+//const MessageThreadCollection = require('./MessageThreadCollection')
+
 let phonebook = new Phonebook("Jonathan")
-let messageEventManager = new MessageEventManager()
+//let msgThreadCollection = new MessageThreadCollection()
+let messageEventManager = new MessageEventManager(phonebook)
 let messageSender = new MessageSender( messageEventManager, phonebook)
 let messageReceiver = new MessageReceiver(
   messageEventManager,
@@ -30,4 +34,4 @@ let messageReceiver = new MessageReceiver(
   })
 
 
-// TODO: make all that a function that can be explosed, or an object with helper functions
+// TODO: make all that a function that can be exposed, or an object with helper functions

@@ -27,8 +27,8 @@ let packetObj = {
 let packetMsg = JSON.stringify(packetObj)
 
 
-client.send(packetMsg, 41234, "192.168.178.91"/*'localhost'*/, (err) => {
-  console.log(err);
+client.send(packetMsg, 41234, 'localhost', (err) => {
+  console.log('error:', err);
   client.close();
 });
 

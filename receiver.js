@@ -13,13 +13,13 @@ server.on('error', (err) => {
 
 
 server.on('message', (buffMsg, rinfo) => {
+  console.log(rinfo)
 
   if (buffMsg instanceof Buffer) {
     let packetMsg = CodecUtils.arrayBufferToUnicode(buffMsg.buffer)
     let packetObj = JSON.parse(packetMsg)
     packetObj.sendDatetime = new Date(packetObj.sendDatetime)
     console.log(packetObj)
-
   }
 });
 

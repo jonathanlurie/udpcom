@@ -23,9 +23,11 @@ class MessageSender {
   }
 
 
-  _sendMessageGeneric (msgObj, ip) {
+  _sendMessageGeneric (msgObj, recipientUsername) {
+    let ip = this._phonebook.getIp(recipientUsername)
+
     if (!ip) {
-      console.warn('The IP is null')
+      console.warn('No IP for this username')
       return
     }
 
@@ -34,6 +36,7 @@ class MessageSender {
       return
     }
 
+    let that = this
     msgObj.username = this._phonebook.getMyUsername()
 
     // serializing the message
@@ -42,6 +45,7 @@ class MessageSender {
     client.send(msgStr, config.port, ip, (err) => {
       //console.log(err);
       //client.close();
+
     })
   }
 
@@ -50,9 +54,16 @@ class MessageSender {
     let message = MessageSender.createGenericMessage()
     message.type = config.messageTypes.standardMessage
     message.content = messageStr
+    this._sendMessageGeneric(recipientUsername, recipientIp)
+    this._messageEventManager.processOutcomingPacketMessage(message, recipientUsername)
+  }
 
-    let recipientIp = this._phonebook.getIp(recipientUsername)
-    this._sendMessageGeneric(message, recipientIp)
+
+  sendJoiningReplyMessage (recipientUsername) {
+    let message = MessageSender.createGenericMessage()
+    message.type = config.messageTypes.joiningReply
+    this._sendMessageGeneric(message, recipientUsername)
+    this._messageEventManager.processOutcomingPacketMessage(message, recipientUsername)
   }
 
   // TODO: the broadcast, how do we get the IP mask and where to iplement that?
