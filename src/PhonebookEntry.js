@@ -1,8 +1,9 @@
 
 
 class PhonebookEntry {
-  constructor (username, ip) {
+  constructor (username, ip, status = null) {
     this._username = username
+    this._status = status
     this._ip = ip
     this._lastActivity = new Date()
   }
@@ -17,6 +18,26 @@ class PhonebookEntry {
 
   getLastActivityDate () {
     return this._lastActivity
+  }
+
+  getStatus () {
+    return this._status
+  }
+
+  setStatus (status) {
+    this._status = status
+  }
+
+  updateLastActivityDate () {
+    this._lastActivity = new Date()
+  }
+
+  setIp (ip) {
+    this._ip = ip
+  }
+
+  setUsername (username) {
+    this._username = username
   }
 }
 

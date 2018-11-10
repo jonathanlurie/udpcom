@@ -58,6 +58,7 @@ class MessageEventManager {
     this.onReceive(config.messageTypes.broadcastPing, function(packetObj, remoteInfo){
         // 1. add this person to the phonebook
         that._phonebook.addEntry(remoteInfo.address, packetObj.username)
+        // TODO: update contact; if changed, of status, of ip
       }
     )
 

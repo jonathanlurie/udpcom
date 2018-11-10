@@ -9,6 +9,7 @@ class MessageSender {
     return {
       type: null,
       hub: null,
+      status: null,
       username: null,
       content: null,
       date: new Date()
@@ -67,7 +68,7 @@ class MessageSender {
   }
 
   // TODO: the broadcast, how do we get the IP mask and where to iplement that?
-
+  // the broadcast ping also goes with the status update
 }
 
 module.exports = MessageSender
