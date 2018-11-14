@@ -1,4 +1,5 @@
 const PhonebookEntry = require('./PhonebookEntry')
+const {ipv4, getBroadcastIpList} = require('./ip')
 
 /*
   Events, set with .on('eventName', function(phoneBkEntry){...})
@@ -22,6 +23,11 @@ class Phonebook {
       contactStatusUpdated: null,
       contactUsernameUpdated: null
     }
+
+    // compute all the IP for a broadcast message
+    let ipData = ipv4()[0]
+    this._broadcastIps = getBroadcastIpList(ipData.ip, ipData.mask)
+
   }
 
 
@@ -38,6 +44,13 @@ class Phonebook {
     }
   }
 
+
+  /**
+   * Get all the IP for a braodcast, using the local IP and netmask
+   */
+  getBroadcastIps () {
+    return this._broadcastIps
+  }
 
   addContact (ip, username, status=null) {
     this._contacts[username] = new PhonebookEntry(username, ip, status)
