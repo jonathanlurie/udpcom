@@ -23,15 +23,29 @@ const Phonebook = require('./Phonebook')
 //const MessageThreadCollection = require('./MessageThreadCollection')
 
 let phonebook = new Phonebook("Jonathan")
-//let msgThreadCollection = new MessageThreadCollection()
 let messageEventManager = new MessageEventManager(phonebook)
 let messageSender = new MessageSender( messageEventManager, phonebook)
+
 let messageReceiver = new MessageReceiver(
   messageEventManager,
   phonebook,
   function(){
-    // do something when the messageReceiver listens...
+    console.log('Reading for incoming messages...');
   })
 
 
-// TODO: make all that a function that can be exposed, or an object with helper functions
+// do something when receiving a standard message to self
+messageEventManager.onReceive('standardMessageToUser', function(packetObj, remoteInfo){
+  console.log('====> to you')
+  console.log(`New message from ${packetObj.senderUsername} (${packetObj.toISOString()})`)
+  console.log(packetObj.message)
+  console.log('____________________________________________________________')
+)
+
+// do something when receiving a standard message to a hub
+messageEventManager.onReceive('standardMessageToHub', function(packetObj, remoteInfo){
+  console.log(`====> to hub #${packetObj.hub}`)
+  console.log(`New message from ${packetObj.senderUsername} (${packetObj.toISOString()})`)
+  console.log(packetObj.message)
+  console.log('____________________________________________________________')
+)

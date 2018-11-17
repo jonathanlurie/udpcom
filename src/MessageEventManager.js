@@ -7,7 +7,7 @@ more callback function to each incoming of a message, upons its type. In other
 words, this class a tool to defin what kind of actions are performed when a
 message of a specific type is received.
 Here it the list of all the incoming message types:
-- `"standardMessage"`: is just a message written by a user to another one.
+- `"standardMessageToUser"`: is just a message written by a user to another one.
 - `"joining"`: is a message broadcasted automatically when a user connects. Such message is empty of content and is sent so that other users get notified of the precence of a new user. Then every other user can add the new user to their phonebook
 - `"joiningReply"`: is the message sent back automatically as an answer to a `"joining"` message. Then, the newly connected user is notified of who is already connected, and can add every other user to its phonebook.
 
@@ -23,8 +23,6 @@ class MessageEventManager {
     this._sendMessageEvents = {}
     this._receiveMessageEvents = {}
     this._init()
-
-    // TODO: allow addition of external events
   }
 
   _init () {
@@ -54,17 +52,12 @@ class MessageEventManager {
       }
     )
 
-    // When we receive a message with the status 'joiningReply'
-    this.onReceive(config.messageTypes.broadcastPing, function(packetObj, remoteInfo){
-        // 1. add this person to the phonebook
-        that._phonebook.addEntry(remoteInfo.address, packetObj.username)
-        // TODO: update contact; if changed, of status, of ip
+    // When we receive a message with the status 'pingAll'
+    this.onReceive(config.messageTypes.pingAll, function(packetObj, remoteInfo){
+        // 1. update this contact info if needed
+        that._phonebook.resolveAndUpdate(packetObj.username, remoteInfo.address, packetObj.status)
       }
     )
-
-
-
-    // TODO: add event for when receive joining welcome (add it to the phonebook)
 
   }
 

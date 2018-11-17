@@ -10,7 +10,7 @@ class MessageSender {
       type: null,
       hub: null,
       status: null,
-      username: null,
+      senderUsername: null,
       content: null,
       date: new Date()
     }
@@ -24,21 +24,14 @@ class MessageSender {
   }
 
 
-  _sendMessageGeneric (msgObj, recipientUsername) {
-    let ip = this._phonebook.getIp(recipientUsername)
-
-    if (!ip) {
-      console.warn('No IP for this username')
-      return
-    }
-
+  _sendMessageGeneric (msgObj, ip) {
     if (!(msgObj.type in config.messageTypes)) {
       console.warn('The type of message is invalid')
       return
     }
 
     let that = this
-    msgObj.username = this._phonebook.getMyUsername()
+    msgObj.senderUsername = this._phonebook.getMyUsername()
 
     // serializing the message
     let msgStr = JSON.stringify(msgObj)
@@ -51,26 +44,48 @@ class MessageSender {
   }
 
 
-  sendStandardMessage (messageStr, recipientUsername) {
+  sendStandardMessageToUser (messageStr, recipientUsername) {
     let message = MessageSender.createGenericMessage()
-    message.type = config.messageTypes.standardMessage
+    message.type = config.messageTypes.standardMessageToUser
     message.content = messageStr
+    let recipientIp = this._phonebook.getIp(recipientUsername)
     this._sendMessageGeneric(recipientUsername, recipientIp)
     this._messageEventManager.processOutcomingPacketMessage(message, recipientUsername)
+  }
+
+
+  sendStandardMessageToToHub (messageStr, hubName) {
+    let message = MessageSender.createGenericMessage()
+    message.type = config.messageTypes.standardMessageToHub
+    message.hub = hubName
+    message.content = messageStr
+    let contactIps = this._phonebook.getContactsIps()
+    for (let i=0; i<contactIps.length; i++) {
+      this._sendMessageGeneric(message, contactIps[i])
+    }
+    this._messageEventManager.processOutcomingPacketMessage(message, config.allContactsUsername)
+  }
+
+
+  sendJoiningMessage () {
+    let message = MessageSender.createGenericMessage()
+    message.type = config.messageTypes.joining
+    let broadcastIps = this._phonebook.getBroadcastIps()
+    for (let i=0; i<broadcastIps.length; i++) {
+      this._sendMessageGeneric(message, broadcastIps[i])
+    }
+    this._messageEventManager.processOutcomingPacketMessage(message, config.broadcastUsername)
   }
 
 
   sendJoiningReplyMessage (recipientUsername) {
     let message = MessageSender.createGenericMessage()
     message.type = config.messageTypes.joiningReply
-    this._sendMessageGeneric(message, recipientUsername)
+    let recipientIp = this._phonebook.getIp(recipientUsername)
+    this._sendMessageGeneric(message, recipientIp)
     this._messageEventManager.processOutcomingPacketMessage(message, recipientUsername)
   }
 
-  
-
-  // TODO: the broadcast, how do we get the IP mask and where to iplement that?
-  // the broadcast ping also goes with the status update
 }
 
 module.exports = MessageSender

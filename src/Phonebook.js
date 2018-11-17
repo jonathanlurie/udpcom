@@ -30,6 +30,10 @@ class Phonebook {
 
   }
 
+  _getAllContacts () {
+    let that = this
+    return Object.keys(this._contacts).map(function(c){return that._contacts[c]})
+  }
 
   getMe () {
     return this._me
@@ -118,7 +122,7 @@ class Phonebook {
 
 
   getContactFromIp (ip) {
-    let allContacts = Object.values(this._contacts)
+    let allContacts = this._getAllContacts()
 
     for (let i=0; i<allContacts.length; i++) {
       if(allContacts[i].getIp() === ip) {
@@ -127,6 +131,7 @@ class Phonebook {
     }
     return null
   }
+
 
   updateContactUsername (ip, newUsername) {
     let contact = this.getContactFromIp(ip)
@@ -137,14 +142,50 @@ class Phonebook {
       this.removeContact(oldUsername)
       this.events.contactUsernameUpdated({contact: contact, oldUsername:oldUsername})
     }
+    return contact
   }
 
 
   getContactsIps() {
-    let ips = Object.values(this._contacts).map(function(c){return c.getIp()})
+    let ips = this._getAllContacts().map(function(c){return c.getIp()})
     return ips
   }
 
+
+  /**
+   * Usually called when a user receives a 'pingAll' message, to figure out if
+   * a username, ip or status was updated
+   */
+  resolveAndUpdate (username, ip, status) {
+    // 1. check if username exist
+    if (username in this._contacts) {
+      let theContact = this._contacts[username]
+
+      if (theContact.getIp() !== ip) {
+        // this way, we also call the event
+        this.updateContactIp(username, ip)
+      }
+
+      if (theContact.getStatus() !== status) {
+        // this way, we also call the event
+        this.updateContactStatus(username, status)
+      }
+    } else {
+
+      // 2. if we have a contact with such ip, if so, update the name
+      let contact = this.updateContactUsername(ip, username)
+
+      if (contact) {
+        if (contact.getStatus() !== status) {
+          this.this.updateContactStatus(contact.getUsername(), status)
+        }
+      } else {
+        // a new contact must be created, but it's very unlikely that gets
+        // created after a 'pingAll' message
+        this.addContact(ip, username, status)
+      }
+    }
+  }
 }
 
 
