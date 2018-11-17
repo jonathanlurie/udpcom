@@ -36,16 +36,25 @@ let messageReceiver = new MessageReceiver(
 
 // do something when receiving a standard message to self
 messageEventManager.onReceive('standardMessageToUser', function(packetObj, remoteInfo){
-  console.log('====> to you')
-  console.log(`New message from ${packetObj.senderUsername} (${packetObj.toISOString()})`)
+  console.log(`📥 from ${packetObj.senderUsername} (${packetObj.toISOString()})`)
   console.log(packetObj.message)
   console.log('____________________________________________________________')
 )
 
 // do something when receiving a standard message to a hub
 messageEventManager.onReceive('standardMessageToHub', function(packetObj, remoteInfo){
-  console.log(`====> to hub #${packetObj.hub}`)
-  console.log(`New message from ${packetObj.senderUsername} (${packetObj.toISOString()})`)
+  console.log(`📥 to hub #${packetObj.hub} from ${packetObj.senderUsername} (${packetObj.toISOString()})`)
   console.log(packetObj.message)
   console.log('____________________________________________________________')
+)
+
+
+// do something when sending a standard message to another user
+messageEventManager.onSend('standardMessageToUser', function(packetObj, recipientUsername){
+  console.log(`📤 sent to ${recipentUsername}`)
+)
+
+// do something when sending a standard message to a hub
+messageEventManager.onSend('standardMessageToHub', function(packetObj, recipientUsername){ // here the name is _ALL_CONTACTS_
+  console.log(`📤 sent to hub ${packetObj.hub}`)
 )
