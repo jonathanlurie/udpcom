@@ -1,5 +1,6 @@
 const PhonebookEntry = require('./PhonebookEntry')
 const {ipv4, getBroadcastIpList} = require('./ip')
+const config = require('./config')
 
 /*
   Events, set with .on('eventName', function(phoneBkEntry){...})
@@ -12,8 +13,8 @@ const {ipv4, getBroadcastIpList} = require('./ip')
 */
 
 class Phonebook {
-  constructor (myUsername) {
-    this._me = new PhonebookEntry(myUsername, null)
+  constructor () {
+    this._me = new PhonebookEntry(config.undefinedUsername, null)
     this._contacts = {}
 
     this._events = {
@@ -21,7 +22,9 @@ class Phonebook {
       contactRemoved: null,
       contactIpUpdated: null,
       contactStatusUpdated: null,
-      contactUsernameUpdated: null
+      contactUsernameUpdated: null,
+      contactLastActivityDateUpdated: null,
+      myDataUploaded: null
     }
 
     // compute all the IP for a broadcast message
@@ -37,6 +40,18 @@ class Phonebook {
 
   getMe () {
     return this._me
+  }
+
+
+  updateMyUsername (username) {
+    this._me.setUsername(username)
+    this._events.myDataUploaded(this._me)
+  }
+
+
+  updateMyStatus (status) {
+    this._me.setStatus(status)
+    this._events.myDataUploaded(this._me)
   }
 
 
@@ -82,6 +97,16 @@ class Phonebook {
       this._events.contactIpUpdated(this._contacts[username])
     }
   }
+
+
+  updateContactLastActivityDate (username) {
+    if (username in this._contacts) {
+      this._contacts[username].updateLastActivityDate()
+      this._events.contactIpUpdated(this._contacts[username])
+    }
+  }
+
+
 
 
   updateContactStatus (username, status) {
@@ -137,10 +162,10 @@ class Phonebook {
     let contact = this.getContactFromIp(ip)
 
     if (contact) {
-      let oldUsername = contact.getUsername()
+      let formerUsername = contact.getUsername()
       contact.setUsername(newUsername)
-      this.removeContact(oldUsername)
-      this.events.contactUsernameUpdated({contact: contact, oldUsername:oldUsername})
+      this.removeContact(formerUsername)
+      this.events.contactUsernameUpdated({contact: contact, formerUsername:formerUsername})
     }
     return contact
   }

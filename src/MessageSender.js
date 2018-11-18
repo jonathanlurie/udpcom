@@ -31,7 +31,8 @@ class MessageSender {
     }
 
     let that = this
-    msgObj.senderUsername = this._phonebook.getMyUsername()
+    msgObj.senderUsername = this._phonebook.getMe().getUsername()
+    msgObj.status = this._phonebook.getMe().getStatus()
 
     // serializing the message
     let msgStr = JSON.stringify(msgObj)
@@ -84,6 +85,11 @@ class MessageSender {
     let recipientIp = this._phonebook.getIp(recipientUsername)
     this._sendMessageGeneric(message, recipientIp)
     this._messageEventManager.processOutcomingPacketMessage(message, recipientUsername)
+  }
+
+
+  sendPingAllMessage () {
+
   }
 
 }

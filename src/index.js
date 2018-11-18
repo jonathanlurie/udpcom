@@ -1,18 +1,3 @@
-// require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-//   console.log('addr: '+add);
-//   console.log(fam);
-// })
-//
-//
-// var os = require( 'os' );
-//
-// var networkInterfaces = os.networkInterfaces( );
-//
-// console.log( networkInterfaces );
-
-
-// var ip = require("ip");
-// console.log ( ip.address() );
 
 const MessageReceiver = require('./MessageReceiver')
 const MessageSender = require('./MessageSender')
@@ -22,7 +7,7 @@ const Phonebook = require('./Phonebook')
 // not sure this oneis very useful after all, i'll just replace that by an event
 //const MessageThreadCollection = require('./MessageThreadCollection')
 
-let phonebook = new Phonebook("Jonathan")
+let phonebook = new Phonebook()
 let messageEventManager = new MessageEventManager(phonebook)
 let messageSender = new MessageSender( messageEventManager, phonebook)
 
@@ -32,6 +17,8 @@ let messageReceiver = new MessageReceiver(
   function(){
     console.log('Reading for incoming messages...');
   })
+
+messageEventManager.init()
 
 
 // do something when receiving a standard message to self
@@ -58,3 +45,35 @@ messageEventManager.onSend('standardMessageToUser', function(packetObj, recipien
 messageEventManager.onSend('standardMessageToHub', function(packetObj, recipientUsername){ // here the name is _ALL_CONTACTS_
   console.log(`📤 sent to hub ${packetObj.hub}`)
 )
+
+
+// PHONEBOOK EVENTS ------------------------------------------------------------
+
+phonebook.on('contactAdded', function(contactEntry){
+  // contactEntry is of type PhonebookEntry
+})
+
+phonebook.on('contactRemoved', function(contactEntry){
+  // contactEntry is of type PhonebookEntry
+})
+
+phonebook.on('contactIpUpdated', function(contactEntry){
+  // contactEntry is of type PhonebookEntry
+})
+
+phonebook.on('contactStatusUpdated', function(contactEntry){
+  // contactEntry is of type PhonebookEntry
+})
+
+phonebook.on('contactUsernameUpdated', function(data){
+  // data is of shape {contact: PhonebookEntry, formerUsername: String}
+})
+
+
+phonebook.on('contactLastActivityDateUpdated', function(contactEntry){
+  // contactEntry is of type PhonebookEntry
+})
+
+phonebook.on('myDataUploaded', function(contactEntry){
+  // contactEntry is of type PhonebookEntry. They are my own
+})

@@ -2,6 +2,10 @@ const config = {
   // This port is chosen arbitrarilly
   port : 21435,
 
+  // name of a user before it's name is defined
+  // (to avoid username doublons on the same network)
+  undefinedUsername: '_UNDEFINED_USERNAME_',
+
   // When the event for sending a broacast message needs a recipient name
   broadcastUsername: '_BROADCAST_',
 

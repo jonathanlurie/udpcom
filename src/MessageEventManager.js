@@ -22,10 +22,10 @@ class MessageEventManager {
     this._messageReceiver = null
     this._sendMessageEvents = {}
     this._receiveMessageEvents = {}
-    this._init()
+    //this._init()
   }
 
-  _init () {
+  init () {
     let that = this
     // create empty arrays of events per type of message received
     let types = Object.values(config.messageTypes)
@@ -40,7 +40,7 @@ class MessageEventManager {
     this.onReceive(config.messageTypes.joining, function(packetObj, remoteInfo){
         // 1. add this person to the phonebook
         that._phonebook.addEntry(remoteInfo.address, packetObj.username)
-        // 2. make an auto reply to of type 'joiningWelcome' to be added to his phonebook
+        // 2. make an auto reply to of type 'joiningReply' to be added to his phonebook
         that._messageSender.sendJoiningReplyMessage(packetObj.username)
       }
     )
@@ -56,6 +56,24 @@ class MessageEventManager {
     this.onReceive(config.messageTypes.pingAll, function(packetObj, remoteInfo){
         // 1. update this contact info if needed
         that._phonebook.resolveAndUpdate(packetObj.username, remoteInfo.address, packetObj.status)
+        // 2. update the last activity date
+        that._phonebook.updateContactLastActivityDate(packetObj.username)
+      }
+    )
+
+    // when we receive a standard message to a user
+    // (most likely there will be another event added by the developer)
+    this.onReceive(config.messageTypes.standardMessageToUser, function(packetObj, remoteInfo){
+        // 1. update the last activity date
+        that._phonebook.updateContactLastActivityDate(packetObj.username)
+      }
+    )
+
+    // when we receive a standard message to a hub
+    // (most likely there will be another event added by the developer)
+    this.onReceive(config.messageTypes.standardMessageToHub, function(packetObj, remoteInfo){
+        // 1. update the last activity date
+        that._phonebook.updateContactLastActivityDate(packetObj.username)
       }
     )
 
