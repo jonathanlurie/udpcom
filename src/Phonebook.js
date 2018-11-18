@@ -13,8 +13,8 @@ const config = require('./config')
 */
 
 class Phonebook {
-  constructor () {
-    this._me = new PhonebookEntry(config.undefinedUsername, null)
+  constructor (selfId, selfDisplayName) {
+    this._me = new PhonebookEntry(selfId, selfDisplayName, null)
     this._contacts = {}
 
     this._events = {
@@ -22,7 +22,7 @@ class Phonebook {
       contactRemoved: null,
       contactIpUpdated: null,
       contactStatusUpdated: null,
-      contactUsernameUpdated: null,
+      contactDisplaynameUpdated: null,
       contactLastActivityDateUpdated: null,
       myDataUploaded: null
     }
@@ -43,8 +43,8 @@ class Phonebook {
   }
 
 
-  updateMyUsername (username) {
-    this._me.setUsername(username)
+  updateMyDisplayName (displayName) {
+    this._me.setDisplayName(diaplName)
     this._events.myDataUploaded(this._me)
   }
 
@@ -55,9 +55,9 @@ class Phonebook {
   }
 
 
-  getIp (username) {
-    if (username in this._contacts) {
-      return this._contacts[username].getIp()
+  getIp (userId) {
+    if (userId in this._contacts) {
+      return this._contacts[userId].getIp()
     } else {
       return null
     }
@@ -71,48 +71,48 @@ class Phonebook {
     return this._broadcastIps
   }
 
-  addContact (ip, username, status=null) {
-    this._contacts[username] = new PhonebookEntry(username, ip, status)
-    this._events.contactAdded(this._contacts[username])
+  addContact (ip, userId, displayName, status=null) {
+    this._contacts[userId] = new PhonebookEntry(userId, displayName, ip, status)
+    this._events.contactAdded(this._contacts[userId])
   }
 
 
-  removeContact (username) {
-    if (username in this._contacts) {
-      let removedContact = this._contacts[username]
-      delete this._contacts[username]
+  removeContact (userId) {
+    if (userId in this._contacts) {
+      let removedContact = this._contacts[userId]
+      delete this._contacts[userId]
       this._events.contactRemoved(removedContact)
     }
   }
 
 
-  getAllUsernames () {
+  getAllUserIds () {
     return Object.keys(this._contacts)
   }
 
 
-  updateContactIp (username, newIp) {
-    if (username in this._contacts) {
-      this._contacts[username].setIp(ip)
-      this._events.contactIpUpdated(this._contacts[username])
+  updateContactIp (userId, newIp) {
+    if (userId in this._contacts) {
+      this._contacts[userId].setIp(ip)
+      this._events.contactIpUpdated(this._contacts[userId])
     }
   }
 
 
-  updateContactLastActivityDate (username) {
-    if (username in this._contacts) {
-      this._contacts[username].updateLastActivityDate()
-      this._events.contactIpUpdated(this._contacts[username])
+  updateContactLastActivityDate (userId) {
+    if (userId in this._contacts) {
+      this._contacts[userId].updateLastActivityDate()
+      this._events.contactIpUpdated(this._contacts[userId])
     }
   }
 
 
 
 
-  updateContactStatus (username, status) {
+  updateContactStatus (userId, status) {
     if (username in this._contacts) {
-      this._contacts[username].setStatus(status)
-      this._events.contactStatusUpdated(this._contacts[username])
+      this._contacts[userId].setStatus(status)
+      this._events.contactStatusUpdated(this._contacts[userId])
     }
   }
 
@@ -133,9 +133,9 @@ class Phonebook {
 
 
   // if ip is provided, perform a test on the é fields
-  hasSuchContact (username, ip=null) {
-    if (username in this._contacts) {
-      if (this._contacts[username].getIp() === ip) {
+  hasSuchContact (userId, ip=null) {
+    if (userId in this._contacts) {
+      if (this._contacts[userId].getIp() === ip) {
         return true
       } else {
         return false
@@ -158,19 +158,6 @@ class Phonebook {
   }
 
 
-  updateContactUsername (ip, newUsername) {
-    let contact = this.getContactFromIp(ip)
-
-    if (contact) {
-      let formerUsername = contact.getUsername()
-      contact.setUsername(newUsername)
-      this.removeContact(formerUsername)
-      this.events.contactUsernameUpdated({contact: contact, formerUsername:formerUsername})
-    }
-    return contact
-  }
-
-
   getContactsIps() {
     let ips = this._getAllContacts().map(function(c){return c.getIp()})
     return ips
@@ -181,33 +168,21 @@ class Phonebook {
    * Usually called when a user receives a 'pingAll' message, to figure out if
    * a username, ip or status was updated
    */
-  resolveAndUpdate (username, ip, status) {
-    // 1. check if username exist
-    if (username in this._contacts) {
-      let theContact = this._contacts[username]
+  resolveAndUpdate (userId, displayName, ip, status) {
+    // 1. check if userId exist
+    if (userId in this._contacts) {
+      let theContact = this._contacts[userId]
 
+      // update ip if needed
       if (theContact.getIp() !== ip) {
         // this way, we also call the event
-        this.updateContactIp(username, ip)
+        this.updateContactIp(userId, ip)
       }
 
+      // update status if needed
       if (theContact.getStatus() !== status) {
         // this way, we also call the event
-        this.updateContactStatus(username, status)
-      }
-    } else {
-
-      // 2. if we have a contact with such ip, if so, update the name
-      let contact = this.updateContactUsername(ip, username)
-
-      if (contact) {
-        if (contact.getStatus() !== status) {
-          this.this.updateContactStatus(contact.getUsername(), status)
-        }
-      } else {
-        // a new contact must be created, but it's very unlikely that gets
-        // created after a 'pingAll' message
-        this.addContact(ip, username, status)
+        this.updateContactStatus(userId, status)
       }
     }
   }

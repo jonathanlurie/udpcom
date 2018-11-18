@@ -1,15 +1,20 @@
 
 
 class PhonebookEntry {
-  constructor (username, ip, status = null) {
-    this._username = username
+  constructor (id, displayName, ip, status = null) {
+    this._id = id
+    this._displayName = displayName
     this._status = status
     this._ip = ip
     this._lastActivity = new Date()
   }
 
-  getUsername () {
-    return this._username
+  getDisplayName () {
+    return this._displayName
+  }
+
+  getId () {
+    return this._id
   }
 
   getIp () {
@@ -24,6 +29,10 @@ class PhonebookEntry {
     return this._status
   }
 
+  setUserId (uid) {
+    this._id = uid
+  }
+
   setStatus (status) {
     this._status = status
   }
@@ -36,8 +45,8 @@ class PhonebookEntry {
     this._ip = ip
   }
 
-  setUsername (username) {
-    this._username = username
+  setDisplayName (displayName) {
+    this._displayName = displayName
   }
 }
 

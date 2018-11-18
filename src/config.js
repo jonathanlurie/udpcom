@@ -7,10 +7,10 @@ const config = {
   undefinedUsername: '_UNDEFINED_USERNAME_',
 
   // When the event for sending a broacast message needs a recipient name
-  broadcastUsername: '_BROADCAST_',
+  broadcastUserId: '_BROADCAST_',
 
   // When the event for sending a message to all the contact needs a username
-  allContactsUsername: '_ALL_CONTACTS_'
+  allContactsUserId: '_ALL_CONTACTS_',
 
   messageTypes: {
 

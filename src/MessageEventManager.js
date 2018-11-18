@@ -39,25 +39,25 @@ class MessageEventManager {
     // When we receive a message with the status 'joining'
     this.onReceive(config.messageTypes.joining, function(packetObj, remoteInfo){
         // 1. add this person to the phonebook
-        that._phonebook.addEntry(remoteInfo.address, packetObj.username)
+        that._phonebook.addContact(remoteInfo.address, packetObj.senderUserId, packetObj.senderDisplayName, packetObj.status)
         // 2. make an auto reply to of type 'joiningReply' to be added to his phonebook
-        that._messageSender.sendJoiningReplyMessage(packetObj.username)
+        that._messageSender.sendJoiningReplyMessage(packetObj.senderUserId)
       }
     )
 
     // When we receive a message with the status 'joiningReply'
     this.onReceive(config.messageTypes.joiningReply, function(packetObj, remoteInfo){
         // 1. add this person to the phonebook
-        that._phonebook.addEntry(remoteInfo.address, packetObj.username)
+        that._phonebook.addContact(remoteInfo.address, packetObj.senderUserId, packetObj.senderDisplayName, packetObj.status)
       }
     )
 
     // When we receive a message with the status 'pingAll'
     this.onReceive(config.messageTypes.pingAll, function(packetObj, remoteInfo){
         // 1. update this contact info if needed
-        that._phonebook.resolveAndUpdate(packetObj.username, remoteInfo.address, packetObj.status)
+        that._phonebook.resolveAndUpdate(packetObj.senderUserId, packetObj.senderDisplayName, remoteInfo.address, packetObj.status)
         // 2. update the last activity date
-        that._phonebook.updateContactLastActivityDate(packetObj.username)
+        that._phonebook.updateContactLastActivityDate(packetObj.senderUserId)
       }
     )
 
@@ -65,7 +65,7 @@ class MessageEventManager {
     // (most likely there will be another event added by the developer)
     this.onReceive(config.messageTypes.standardMessageToUser, function(packetObj, remoteInfo){
         // 1. update the last activity date
-        that._phonebook.updateContactLastActivityDate(packetObj.username)
+        that._phonebook.updateContactLastActivityDate(packetObj.senderUserId)
       }
     )
 
@@ -73,7 +73,7 @@ class MessageEventManager {
     // (most likely there will be another event added by the developer)
     this.onReceive(config.messageTypes.standardMessageToHub, function(packetObj, remoteInfo){
         // 1. update the last activity date
-        that._phonebook.updateContactLastActivityDate(packetObj.username)
+        that._phonebook.updateContactLastActivityDate(packetObj.senderUserId)
       }
     )
 
@@ -149,23 +149,23 @@ class MessageEventManager {
 
   processIncomingPacketMessage (packetObj, remoteInfo) {
     // the message must have a known type
-    if (!(msgObj.type in config.messageTypes)) {
+    if (!(packetObj.type in config.messageTypes)) {
       console.warn('The type of message is invalid')
       return
     }
 
-    that._triggerReceiveMessageEvent(packetObj.type, [packetObj, remoteInfo])
+    this._triggerReceiveMessageEvent(packetObj.type, [packetObj, remoteInfo])
   }
 
 
   processOutcomingPacketMessage (packetObj, recipientUsername) {
     // the message must have a known type
-    if (!(msgObj.type in config.messageTypes)) {
+    if (!(packetObj.type in config.messageTypes)) {
       console.warn('The type of message is invalid')
       return
     }
 
-    that._triggerSendMessageEvent(packetObj.type, [packetObj, recipientUsername])
+    this._triggerSendMessageEvent(packetObj.type, [packetObj, recipientUsername])
   }
 }
 

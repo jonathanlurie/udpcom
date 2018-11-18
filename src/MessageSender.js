@@ -10,7 +10,8 @@ class MessageSender {
       type: null,
       hub: null,
       status: null,
-      senderUsername: null,
+      senderUserId: null,
+      senderDisplayName: null,
       content: null,
       date: new Date()
     }
@@ -20,7 +21,6 @@ class MessageSender {
     this._phonebook = phonebook
     this._messageEventManager = messageEventManager
     messageEventManager.setMessageSender(this)
-    this._init ()
   }
 
 
@@ -31,7 +31,8 @@ class MessageSender {
     }
 
     let that = this
-    msgObj.senderUsername = this._phonebook.getMe().getUsername()
+    msgObj.senderUserId= this._phonebook.getMe().getId()
+    msgObj.senderDisplayName= this._phonebook.getMe().getDisplayName()
     msgObj.status = this._phonebook.getMe().getStatus()
 
     // serializing the message
@@ -45,17 +46,17 @@ class MessageSender {
   }
 
 
-  sendStandardMessageToUser (messageStr, recipientUsername) {
+  sendStandardMessageToUser (messageStr, recipientUserId) {
     let message = MessageSender.createGenericMessage()
     message.type = config.messageTypes.standardMessageToUser
     message.content = messageStr
-    let recipientIp = this._phonebook.getIp(recipientUsername)
-    this._sendMessageGeneric(recipientUsername, recipientIp)
-    this._messageEventManager.processOutcomingPacketMessage(message, recipientUsername)
+    let recipientIp = this._phonebook.getIp(recipientUserId)
+    this._sendMessageGeneric(recipientUserId, recipientIp)
+    this._messageEventManager.processOutcomingPacketMessage(message, recipientUserId)
   }
 
 
-  sendStandardMessageToToHub (messageStr, hubName) {
+  sendStandardMessageToHub (messageStr, hubName) {
     let message = MessageSender.createGenericMessage()
     message.type = config.messageTypes.standardMessageToHub
     message.hub = hubName
@@ -64,7 +65,7 @@ class MessageSender {
     for (let i=0; i<contactIps.length; i++) {
       this._sendMessageGeneric(message, contactIps[i])
     }
-    this._messageEventManager.processOutcomingPacketMessage(message, config.allContactsUsername)
+    this._messageEventManager.processOutcomingPacketMessage(message, config.allContactsUserId)
   }
 
 
@@ -75,21 +76,28 @@ class MessageSender {
     for (let i=0; i<broadcastIps.length; i++) {
       this._sendMessageGeneric(message, broadcastIps[i])
     }
-    this._messageEventManager.processOutcomingPacketMessage(message, config.broadcastUsername)
+    this._messageEventManager.processOutcomingPacketMessage(message, config.broadcastUserId)
   }
 
 
-  sendJoiningReplyMessage (recipientUsername) {
+  sendJoiningReplyMessage (recipientUserId) {
     let message = MessageSender.createGenericMessage()
     message.type = config.messageTypes.joiningReply
-    let recipientIp = this._phonebook.getIp(recipientUsername)
+    let recipientIp = this._phonebook.getIp(recipientUserId)
     this._sendMessageGeneric(message, recipientIp)
-    this._messageEventManager.processOutcomingPacketMessage(message, recipientUsername)
+    this._messageEventManager.processOutcomingPacketMessage(message, recipientUserId)
   }
 
 
   sendPingAllMessage () {
+    let message = MessageSender.createGenericMessage()
+    message.type = config.messageTypes.pingAll
 
+    let contactIps = this._phonebook.getContactsIps()
+    for (let i=0; i<contactIps.length; i++) {
+      this._sendMessageGeneric(message, contactIps[i])
+    }
+    this._messageEventManager.processOutcomingPacketMessage(message, config.allContactsUserId)
   }
 
 }
