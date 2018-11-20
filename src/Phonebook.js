@@ -71,9 +71,12 @@ class Phonebook {
     return this._broadcastIps
   }
 
+
   addContact (ip, userId, displayName, status=null) {
-    this._contacts[userId] = new PhonebookEntry(userId, displayName, ip, status)
-    this._events.contactAdded(this._contacts[userId])
+    if (userId !== this._me.getId()) {
+      this._contacts[userId] = new PhonebookEntry(userId, displayName, ip, status)
+      this._events.contactAdded(this._contacts[userId])
+    }
   }
 
 
