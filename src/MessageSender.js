@@ -13,7 +13,7 @@ class MessageSender {
       senderUserId: null,
       senderDisplayName: null,
       content: null,
-      date: new Date()
+      date: new Date().toString()
     }
   }
 
@@ -27,7 +27,12 @@ class MessageSender {
   _sendMessageGeneric (msgObj, ip) {
     if (!(msgObj.type in config.messageTypes)) {
       console.warn('The type of message is invalid')
-      return
+      return false
+    }
+
+    if (!ip) {
+      console.warn('The ip is not valid')
+      return false
     }
 
     let that = this
@@ -37,12 +42,8 @@ class MessageSender {
 
     // serializing the message
     let msgStr = JSON.stringify(msgObj)
-
-    client.send(msgStr, config.port, ip, (err) => {
-      //console.log(err);
-      //client.close();
-
-    })
+    client.send(msgStr, config.port, ip, (err) => {})
+    return true
   }
 
 
@@ -51,8 +52,9 @@ class MessageSender {
     message.type = config.messageTypes.standardMessageToUser
     message.content = messageStr
     let recipientIp = this._phonebook.getIp(recipientUserId)
-    this._sendMessageGeneric(message, recipientIp)
-    this._messageEventManager.processOutcomingPacketMessage(message, recipientUserId)
+    let ok = this._sendMessageGeneric(message, recipientIp)
+    if (ok)
+      this._messageEventManager.processOutcomingPacketMessage(message, recipientUserId)
   }
 
 

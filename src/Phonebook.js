@@ -110,7 +110,7 @@ class Phonebook {
 
 
   updateContactStatus (userId, status) {
-    if (username in this._contacts) {
+    if (userId in this._contacts) {
       this._contacts[userId].setStatus(status)
       this._events.contactStatusUpdated(this._contacts[userId])
     }

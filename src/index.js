@@ -30,14 +30,14 @@ console.log(messageReceiver);
 
 // do something when receiving a standard message to self
 messageEventManager.onReceive('standardMessageToUser', function(packetObj, remoteInfo){
-  console.log(`📥 from ${packetObj.senderDisplayName} (${packetObj.date.toISOString()})`)
+  console.log(`📥 from ${packetObj.senderDisplayName} (${packetObj.date.toString()})`)
   console.log(packetObj.content)
   console.log('____________________________________________________________')
 })
 
 // do something when receiving a standard message to a hub
 messageEventManager.onReceive('standardMessageToHub', function(packetObj, remoteInfo){
-  console.log(`📥 to hub #${packetObj.hub} from ${packetObj.senderDisplayName} (${packetObj.date.toISOString()})`)
+  console.log(`📥 to hub #${packetObj.hub} from ${packetObj.senderDisplayName} (${packetObj.date.toString()})`)
   console.log(packetObj.content)
   console.log('____________________________________________________________')
 })
