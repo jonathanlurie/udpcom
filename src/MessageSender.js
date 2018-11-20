@@ -51,7 +51,7 @@ class MessageSender {
     message.type = config.messageTypes.standardMessageToUser
     message.content = messageStr
     let recipientIp = this._phonebook.getIp(recipientUserId)
-    this._sendMessageGeneric(recipientUserId, recipientIp)
+    this._sendMessageGeneric(message, recipientIp)
     this._messageEventManager.processOutcomingPacketMessage(message, recipientUserId)
   }
 

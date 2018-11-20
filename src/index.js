@@ -23,25 +23,29 @@ messageEventManager.init()
 // tell to everyone we are connected
 messageSender.sendJoiningMessage()
 
+console.log(phonebook);
+console.log(messageEventManager);
+console.log(messageSender);
+console.log(messageReceiver);
 
 // do something when receiving a standard message to self
 messageEventManager.onReceive('standardMessageToUser', function(packetObj, remoteInfo){
-  console.log(`📥 from ${packetObj.senderUsername} (${packetObj.toISOString()})`)
-  console.log(packetObj.message)
+  console.log(`📥 from ${packetObj.senderDisplayName} (${packetObj.date.toISOString()})`)
+  console.log(packetObj.content)
   console.log('____________________________________________________________')
 })
 
 // do something when receiving a standard message to a hub
 messageEventManager.onReceive('standardMessageToHub', function(packetObj, remoteInfo){
-  console.log(`📥 to hub #${packetObj.hub} from ${packetObj.senderUsername} (${packetObj.toISOString()})`)
-  console.log(packetObj.message)
+  console.log(`📥 to hub #${packetObj.hub} from ${packetObj.senderDisplayName} (${packetObj.date.toISOString()})`)
+  console.log(packetObj.content)
   console.log('____________________________________________________________')
 })
 
 
 // do something when sending a standard message to another user
 messageEventManager.onSend('standardMessageToUser', function(packetObj, recipientUsername){
-  console.log(`📤 sent to ${recipentUsername}`)
+  console.log(`📤 sent to ${recipientUsername}`)
 })
 
 // do something when sending a standard message to a hub

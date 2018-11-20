@@ -28,7 +28,7 @@ class MessageReceiver {
       if (buffMsg instanceof Buffer) {
         let packetMsg = CodecUtils.arrayBufferToUnicode(buffMsg.buffer)
         let packetObj = JSON.parse(packetMsg)
-        packetObj.sendDatetime = new Date(packetObj.sendDatetime)
+        packetObj.date = new Date(packetObj.date)
         that._messageEventManager.processIncomingPacketMessage(packetObj, rinfo)
       }
     })
