@@ -44,7 +44,7 @@ class Phonebook {
 
 
   updateMyDisplayName (displayName) {
-    this._me.setDisplayName(diaplName)
+    this._me.setDisplayName(displayName)
     this._events.myDataUploaded(this._me)
   }
 
@@ -107,12 +107,18 @@ class Phonebook {
   }
 
 
-
-
   updateContactStatus (userId, status) {
     if (userId in this._contacts) {
       this._contacts[userId].setStatus(status)
       this._events.contactStatusUpdated(this._contacts[userId])
+    }
+  }
+
+
+  updateContactDisplayName (userId, displayName) {
+    if (userId in this._contacts) {
+      this._contacts[userId].setDisplayName(displayName)
+      this._events.contactDisplaynameUpdated(this._contacts[userId])
     }
   }
 
@@ -169,7 +175,7 @@ class Phonebook {
    * a username, ip or status was updated
    */
   resolveAndUpdate (userId, displayName, ip, status) {
-    // 1. check if userId exist
+    // check if userId exist
     if (userId in this._contacts) {
       let theContact = this._contacts[userId]
 
@@ -183,6 +189,12 @@ class Phonebook {
       if (theContact.getStatus() !== status) {
         // this way, we also call the event
         this.updateContactStatus(userId, status)
+      }
+
+      // update displayName if needed
+      if (theContact.getDisplayName()!== displayName) {
+        // this way, we also call the event
+        this.updateContactDisplayName(userId, displayName)
       }
     }
   }
