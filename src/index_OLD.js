@@ -7,7 +7,7 @@ const Phonebook = require('./Phonebook')
 // not sure this oneis very useful after all, i'll just replace that by an event
 //const MessageThreadCollection = require('./MessageThreadCollection')
 
-let phonebook = new Phonebook('jonathan.lurie', 'jonathan')
+let phonebook = new Phonebook('jonathan.lurie2', 'jonathan2')
 let messageEventManager = new MessageEventManager(phonebook)
 let messageSender = new MessageSender( messageEventManager, phonebook)
 

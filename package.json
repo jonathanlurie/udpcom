@@ -2,7 +2,7 @@
   "name": "udpcom",
   "version": "1.0.0",
   "description": "communicate with UDP",
-  "main": "index.js",
+  "main": "src/Udpcom.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

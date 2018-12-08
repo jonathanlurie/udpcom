@@ -12,8 +12,14 @@ const config = require('./config')
 
 */
 
+
+/**
+ * options:
+ *  options.netmask {string} - force a different netmask
+ */
+
 class Phonebook {
-  constructor (selfId, selfDisplayName) {
+  constructor (selfId, selfDisplayName, options={}) {
     this._me = new PhonebookEntry(selfId, selfDisplayName, null)
     this._contacts = {}
 
@@ -27,9 +33,12 @@ class Phonebook {
       myDataUploaded: null
     }
 
+
+
     // compute all the IP for a broadcast message
     let ipData = ipv4()[0]
-    this._broadcastIps = getBroadcastIpList(ipData.ip, ipData.mask)
+    let netmask = options.netmask || ipData.mask
+    this._broadcastIps = getBroadcastIpList(ipData.ip, netmask)
 
   }
 
