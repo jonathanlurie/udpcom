@@ -1,5 +1,5 @@
 const PhonebookEntry = require('./PhonebookEntry')
-const {ipv4, getBroadcastIpList} = require('./ip')
+const {ipv4, getBroadcastIpList, getIpListCidr} = require('./ip')
 const config = require('./config')
 
 /*
@@ -15,7 +15,7 @@ const config = require('./config')
 
 /**
  * options:
- *  options.netmask {string} - force a different netmask
+ *  options.cidr {string} - force a different cidr
  */
 
 class Phonebook {
@@ -33,13 +33,10 @@ class Phonebook {
       myDataUploaded: null
     }
 
-
-
     // compute all the IP for a broadcast message
     let ipData = ipv4()[0]
-    let netmask = options.netmask || ipData.mask
-    this._broadcastIps = getBroadcastIpList(ipData.ip, netmask)
-
+    let cidr = options.cidr || ipData.cidr
+    this._broadcastIps = getIpListCidr(cidr)
   }
 
   _getAllContacts () {

@@ -1,7 +1,7 @@
 const Udpcom = require('..')
 
 let options = {
-  //netmask: '255.0.0.0'
+  netmask: '255.0.0.0'
 }
 
 let udpcom = new Udpcom('jonathan.lurie', 'Jo', options)

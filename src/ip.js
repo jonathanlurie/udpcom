@@ -1,4 +1,5 @@
 const os = require('os')
+const CIDR = require('cidr-js')
 
 function ipv4() {
 
@@ -13,7 +14,7 @@ function ipv4() {
     for (let g=0; g<interf.length; g++) {
       let group = interf[g]
       if (!group.internal && group.family === 'IPv4') {
-        allTheValid.push({name: networkName,ip: group.address, mask: group.netmask})
+        allTheValid.push({name: networkName,ip: group.address, mask: group.netmask, cidr: group.cidr})
       }
     }
 
@@ -54,7 +55,20 @@ function getBroadcastIpList(ip, mask) {
   return allIps
 }
 
+// if cidr not provided, the the local ip/cidr is used (with the function ipv4() )
+function getIpListCidr(cidrStr=null) {
+  if(!cidrStr) {
+    let ipData = ipv4()[0]
+    cidrStr = ipData.cidr
+  }
+
+  let cidr = new CIDR()
+  let results = cidr.list(cidrStr)
+  return results
+}
+
 module.exports = {
   ipv4: ipv4,
-  getBroadcastIpList: getBroadcastIpList
+  getBroadcastIpList: getBroadcastIpList,
+  getIpListCidr:getIpListCidr
 }

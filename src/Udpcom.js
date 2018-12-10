@@ -3,6 +3,11 @@ const MessageSender = require('./MessageSender')
 const MessageEventManager = require('./MessageEventManager')
 const Phonebook = require('./Phonebook')
 
+
+/**
+ * options:
+ *  options.cidr {string} - force a different cidr
+ */
 class Udpcom {
   constructor (userId, displayName, options) {
     this._phonebook = new Phonebook(userId, displayName, options)
@@ -18,8 +23,10 @@ class Udpcom {
 
     this._messageEventManager.init()
 
+    console.time('broadcast')
     // tell to everyone we are connected
     this._messageSender.sendJoiningMessage()
+    console.timeEnd('broadcast')
   }
 
 
